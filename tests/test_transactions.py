@@ -15,7 +15,7 @@ def test_every_type_has_a_rule():
 
 
 def test_deposit_and_withdrawal_signs_and_investor_perspective():
-    a = classify(txns(("T1", "1405/01/15", "DEPOSIT", 100, None), ("T2", "1405/01/16", "WITHDRAWAL", 40, None)))
+    a = classify(txns(("T1", "2026-04-04", "DEPOSIT", 100, None), ("T2", "2026-04-05", "WITHDRAWAL", 40, None)))
     assert list(a["account_flow"]) == [100, -40]
     assert list(a["investor_flow"]) == [-100, 40]
     assert list(a["inflow"]) == [100, 0] and list(a["outflow"]) == [0, 40]

@@ -9,7 +9,7 @@ conventions they share. Code references point to `src/portfolio_returns/`.
 |---|---|---|
 | Time-weighted return (TWR) | How well did the investments perform, regardless of when money came and went? | % of the period, not annualised |
 | Money-weighted return (MWR) | What return did *this investor* earn on the money they actually had in the account? | % of the period (annual rate kept for the back end) |
-| Wealth change | How many rials did the investments gain or lose, after removing deposits and withdrawals? | rials |
+| Wealth change | How many currency units did the investments gain or lose, after removing deposits and withdrawals? | currency units |
 
 TWR is the right number to judge a portfolio or a strategy, because a large deposit just
 before a fall does not punish it. MWR is the investor's own experience, and it does react to
@@ -77,9 +77,9 @@ turned into fake zero returns:
 | `LOW_CAPITAL` | `D <= 0` or `0 < D < min_capital` | factor 1 (chart flat), counted |
 | `INVALID_DATA` | unknown value, unknown flow, duplicate record, credit inconsistency | factor unknown: every horizon containing the day is blocked |
 
-The minimum-capital guard exists because a few thousand rials left in an emptied account
+The minimum-capital guard exists because a few thousand currency units left in an emptied account
 can show +300% in a day when a dividend or a tiny price move lands on them. Those days carry
-no economic information. The default is 1,000,000 rials; it is a parameter.
+no economic information. The default is 1,000,000 currency units; it is a parameter.
 
 The **cumulative chart** is rebased to 0% on the anchor of the selected horizon, so the
 end of the line equals the horizon TWR. The anchor's own daily return belongs to the
@@ -145,7 +145,7 @@ every root found. Its statuses are explicit and a rate is never invented:
 ### Boundary rules for MWR
 
 1. `|BV| < min_capital`: BV is treated as 0 and the period starts at the first real flow.
-   Without this, a few rials left for eleven months, then a deposit and a 10% month, give
+   Without this, a few currency units left for eleven months, then a deposit and a 10% month, give
    about +215% for "1Y" instead of +10%.
 2. `BV <= -min_capital` (real debt at the start): kept as it is.
 3. Nothing came back (no positive flow): -100%, reason `TOTAL_LOSS`, or
@@ -178,12 +178,12 @@ policy (to decide whether the amount is plausible); it is never shown.
 | Horizon | Anchor |
 |---|---|
 | 1M, 3M, 6M, 1Y (and 3Y, 5Y with `--extended`) | the same day N calendar months before the as-of date, clipped to the month end (31 March minus one month is 28 February) |
-| YTD | the last day of Esfand of the previous Jalali year, so the window starts on 1 Farvardin |
+| YTD | the last day of Esfand of the previous calendar year, so the window starts on 1 Farvardin |
 | ALL | entry: the last known-zero close before the first funded day, else the first funded close |
-| Jalali years (`--years`) | each Jalali year from the entry year; the current year is to date |
+| calendar years (`--years`) | each calendar year from the entry year; the current year is to date |
 
 Calendar months are never replaced by 30/90/180/365 fixed days. Month arithmetic can run on
-the Gregorian or the Jalali calendar (`--calendar`). Jalali dates are converted exactly
+the Gregorian or the Gregorian calendar (`--calendar`). ISO dates are converted exactly
 (1 Farvardin 1405 = 21 March 2026).
 
 When the history is shorter than a horizon there are two policies:
@@ -197,7 +197,7 @@ When the first value row already contains investments (history starts mid-life),
 labelled since entry with a note that earlier performance is unknown. A zero opening value is
 never invented.
 
-Consistency check: linking the TWR of the Jalali years must reproduce the ALL TWR. The
+Consistency check: linking the TWR of the calendar years must reproduce the ALL TWR. The
 engine computes this on every run (`years_link_to_all`).
 
 ## Annualisation

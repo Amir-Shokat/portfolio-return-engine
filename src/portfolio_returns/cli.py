@@ -1,4 +1,4 @@
-"""Command line: ``portfolio-returns --transactions T.csv --values V.csv --as-of 1405/07/30``."""
+"""Command line for portfolio return analysis."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ import sys
 
 import pandas as pd
 
-from .dates import to_jalali
+from .dates import format_date
 from .engine import analyse, format_table
 from .horizons import EXTENDED, STANDARD
 from .twr import MIN_CAPITAL_DEFAULT
@@ -17,14 +17,12 @@ def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="portfolio-returns",
                                 description="TWR, MWR and wealth change per horizon for one account.")
     p.add_argument("--transactions", required=True, help="CSV: txn_id,date,type,amount[,side,ref,symbol,description]")
-    p.add_argument("--values", required=True, help="CSV: date,cash,holdings[,options] (end of day, rials)")
-    p.add_argument("--as-of", required=True, help="reporting date, Jalali (1405/07/30) or Gregorian (2026-10-22)")
-    p.add_argument("--min-capital", type=float, default=MIN_CAPITAL_DEFAULT, help="minimum start-of-day capital in rials")
-    p.add_argument("--calendar", choices=["gregorian", "jalali"], default="gregorian",
-                   help="calendar used to step back whole months")
+    p.add_argument("--values", required=True, help="CSV: date,cash,holdings[,options] (end of day, currency units)")
+    p.add_argument("--as-of", required=True, help="reporting date in ISO format, e.g. 2026-10-22")
+    p.add_argument("--min-capital", type=float, default=MIN_CAPITAL_DEFAULT, help="minimum start-of-day capital in currency units")
     p.add_argument("--history-policy", choices=["all_since_entry", "nearest_only"], default="all_since_entry")
     p.add_argument("--extended", action="store_true", help="also show 3Y and 5Y")
-    p.add_argument("--years", action="store_true", help="also show each Jalali year")
+    p.add_argument("--years", action="store_true", help="also show each calendar year")
     p.add_argument("--audit", help="write the classified transaction audit to this CSV")
     p.add_argument("--daily", help="write the daily table with returns to this CSV")
     p.add_argument("--csv", help="write the horizon table to this CSV")
@@ -32,9 +30,9 @@ def main(argv=None) -> int:
 
     rep = analyse(pd.read_csv(a.transactions), pd.read_csv(a.values), a.as_of,
                   horizons=EXTENDED if a.extended else STANDARD, min_capital=a.min_capital,
-                  calendar=a.calendar, history_policy=a.history_policy)
+                  history_policy=a.history_policy)
     st = rep.audit["status"].value_counts()
-    print(f"As of {to_jalali(rep.as_of)} ({rep.as_of.date()}); amounts in rials; returns not annualised")
+    print(f"As of {format_date(rep.as_of)}; amounts in currency units; returns not annualised")
     print(f"Transactions: {int(st.get('external', 0))} external, {int(st.get('internal', 0))} internal, "
           f"{int(st.get('snapshot', 0))} snapshots, {int(st.get('unmapped', 0))} unmapped, "
           f"{int(st.get('invalid', 0))} invalid, {int(st.get('duplicate', 0))} duplicates ignored")
@@ -51,7 +49,7 @@ def main(argv=None) -> int:
             wc = "" if r["wc"] is None or pd.isna(r["wc"]) else f"{r['wc']:,.0f}"
             print(f"{r['horizon']:<6} {twr:>10} {mwr:>10} {wc:>16}{tag}")
         if "years_link_to_all" in rep.horizons.attrs:
-            print(f"Jalali years link to ALL: {rep.horizons.attrs['years_link_to_all']}")
+            print(f"Calendar years link to ALL: {rep.horizons.attrs['years_link_to_all']}")
     if rep.warnings or rep.credit_issues:
         print()
         for w in rep.warnings:

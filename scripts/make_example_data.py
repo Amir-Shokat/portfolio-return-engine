@@ -2,8 +2,8 @@
 
     python scripts/make_example_data.py
 
-One made-up account (U001) from Shahrivar 1404 to Mehr 1405. A small ledger simulates
-prices (with the +/-5% daily price limit of the Tehran Stock Exchange), trades and fees,
+One made-up account (U001) from August 2025 to October 2026. A small ledger simulates
+prices, trades and fees,
 and the events the engine has to classify: deposits and withdrawals, a same-day deposit and
 withdrawal, a securities transfer from another broker, a cash dividend paid to the
 investor's bank account, bonus shares, a rights issue (allocation, partial exercise paid from
@@ -11,14 +11,13 @@ outside, lapse of the rest, listing of the new shares), purchase credit, a call 
 settled by delivery, a purchase made the day before its deposit was posted (negative cash
 for one day) and a transfer to a wallet outside the account.
 
-End-of-day values are written only on trading days (Saturday to Wednesday, outside Nowruz);
-the engine carries them over weekends and holidays. Dates are Jalali, as in Iranian
-back-office exports.
+End-of-day values are written only on standard Monday-to-Friday business days, excluding
+a small illustrative holiday set. The engine carries values over weekends and holidays.
+All dates use ISO ``YYYY-MM-DD`` format.
 """
 
 from pathlib import Path
 
-import jdatetime
 import numpy as np
 import pandas as pd
 
@@ -27,16 +26,15 @@ out = Path(__file__).resolve().parents[1] / "examples"
 out.mkdir(exist_ok=True)
 
 START, END = pd.Timestamp("2025-08-20"), pd.Timestamp("2026-10-21")
-HOLIDAYS = {pd.Timestamp(d) for d in ["2026-03-21", "2026-03-22", "2026-03-23", "2026-03-24",
-                                      "2026-04-01", "2026-04-02"]}
+HOLIDAYS = {pd.Timestamp(d) for d in ["2025-12-25", "2026-01-01", "2026-04-03"]}
 
 
 def trading(d):
-    return d.weekday() in (5, 6, 0, 1, 2) and d not in HOLIDAYS
+    return d.weekday() < 5 and d not in HOLIDAYS
 
 
-def jalali(d):
-    return jdatetime.date.fromgregorian(date=d.date()).strftime("%Y/%m/%d")
+def iso_date(d):
+    return pd.Timestamp(d).strftime("%Y-%m-%d")
 
 
 def next_trading(d):
@@ -55,7 +53,7 @@ txns, values = [], []
 
 
 def add(d, typ, amount, symbol="", side="", ref="", desc=""):
-    txns.append(dict(txn_id=f"T{len(txns) + 1:04d}", date=jalali(d), account_id="U001", type=typ,
+    txns.append(dict(txn_id=f"T{len(txns) + 1:04d}", date=iso_date(d), account_id="U001", type=typ,
                      amount=round(amount), side=side, ref=ref, symbol=symbol, description=desc))
 
 
@@ -213,7 +211,7 @@ on("2026-09-20", lambda d: (add(d, "TRANSFER_TO_OTHER_PRODUCT", 50_000_000, desc
 on("2026-10-11", deposit(250_000_000))
 on("2026-10-11", lambda d: trade(d, "BETA", 40_000))
 
-values.append(dict(date=jalali(START), cash=0, holdings=0, options=0))
+values.append(dict(date=iso_date(START), cash=0, holdings=0, options=0))
 for d in days[1:] if days[0] == START else days:
     for k in price:
         price[k] *= float(np.exp(np.clip(rng.normal(0.0011, 0.017), -0.05, 0.05)))
@@ -224,14 +222,14 @@ for d in days[1:] if days[0] == START else days:
         left = max((option["expiry"] - d).days, 0) / max((option["expiry"] - option["start"]).days, 1)
         opt_value = option["n"] * max(price["BETA"] - option["strike"], 0.0) + option["tv"] * left
     holdings = sum(q * px(s) for s, q in qty.items())
-    values.append(dict(date=jalali(d), cash=round(cash), holdings=round(holdings), options=round(opt_value)))
+    values.append(dict(date=iso_date(d), cash=round(cash), holdings=round(holdings), options=round(opt_value)))
 
 pd.DataFrame(txns).to_csv(out / "transactions.csv", index=False)
 pd.DataFrame(values).to_csv(out / "daily_values.csv", index=False)
 
 # Same account plus one transaction type the rule table does not know.
 unknown = pd.DataFrame(txns)
-extra = dict(txn_id="T9001", date="1405/06/10", account_id="U001", type="LOYALTY_REWARD", amount=5_000_000,
+extra = dict(txn_id="T9001", date="2026-09-01", account_id="U001", type="LOYALTY_REWARD", amount=5_000_000,
              side="", ref="", symbol="", description="type not in the rule table")
 pd.concat([unknown, pd.DataFrame([extra])], ignore_index=True).to_csv(out / "transactions_with_unknown.csv", index=False)
 print(f"Wrote {len(txns)} transactions and {len(values)} value rows to {out}")

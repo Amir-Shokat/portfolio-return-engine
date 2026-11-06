@@ -8,7 +8,7 @@ from portfolio_returns.quality import unexplained_changes
 from portfolio_returns.transactions import classify
 from portfolio_returns.valuation import build_daily_table
 
-AS_OF = "1405/07/29"
+AS_OF = "2026-10-21"
 
 
 @pytest.fixture(scope="module")
@@ -28,9 +28,9 @@ def test_every_horizon_adds_up(report):
     assert np.allclose(h["bv"] + h["wc"] + h["net_flow"], h["ev"])
 
 
-def test_jalali_years_link_to_all(report):
+def test_calendar_years_link_to_all(report):
     assert report.horizons.attrs["years_link_to_all"] is True
-    assert list(report.years["horizon"]) == ["1404", "1405"]
+    assert list(report.years["horizon"]) == ["2025", "2026"]
 
 
 def test_chart_starts_at_zero(report):
@@ -39,14 +39,15 @@ def test_chart_starts_at_zero(report):
 
 
 def test_same_day_deposit_and_withdrawal_in_daily_table(report):
-    day = report.daily.loc["2026-05-09"]
+    # The synthetic event falls on a weekend and is posted on the next session.
+    day = report.daily.loc["2026-05-11"]
     assert day["inflow"] == day["outflow"] == 200_000_000
 
 
 def test_unknown_type_blocks_only_windows_that_contain_it(example_frames):
     t, v, tu = example_frames
     rep = analyse(tu, v, AS_OF).horizons.set_index("horizon")
-    assert rep.at["1M", "twr_status"] == "CALCULATED"           # 1405/06/10 is before the 1M window
+    assert rep.at["1M", "twr_status"] == "CALCULATED"           # 2026-09-01 is before the 1M window
     for h in ["3M", "6M", "1Y", "YTD", "ALL"]:
         assert rep.at[h, "twr_status"] == "RETURN_UNAVAILABLE"
         assert rep.at[h, "wc_display"] == "HIDDEN"
@@ -58,7 +59,7 @@ def test_cli(example_frames, capsys, tmp_path):
     assert main(["--transactions", str(EXAMPLES / "transactions.csv"), "--values",
                  str(EXAMPLES / "daily_values.csv"), "--as-of", AS_OF, "--years", "--csv", str(out)]) == 0
     text = capsys.readouterr().out
-    assert "Horizon" in text and "Jalali years link to ALL: True" in text
+    assert "Horizon" in text and "Calendar years link to ALL: True" in text
     assert len(pd.read_csv(out)) == 6
 
 

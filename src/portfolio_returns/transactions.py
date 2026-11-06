@@ -146,7 +146,7 @@ def _side_sign(side) -> int | None:
 def classify(transactions: pd.DataFrame, strict: bool = False) -> pd.DataFrame:
     """Classify every transaction row and return a full audit table.
 
-    Required columns: ``date``, ``type``, ``amount`` (a non-negative magnitude in rials).
+    Required columns: ``date``, ``type``, ``amount`` (a non-negative magnitude in currency units).
     Optional: ``txn_id``, ``side`` (for conditional types), ``ref`` (credit application),
     ``symbol``, ``description`` (kept for audit only, never used for classification).
 

@@ -10,10 +10,9 @@ Every horizon is a window ``(anchor, end]``:
 TWR, MWR and wealth change for a horizon always use the same anchor and end, and the
 cumulative chart starts at 0% on the anchor.
 
-Monthly horizons use calendar months with month-end clipping (``1M`` ending 22 Oct 2026
-is anchored on the 22 Sep 2026 close and starts on 23 Sep). YTD and the yearly history
-use the Jalali year: YTD is anchored on the last day of Esfand of the previous year, so
-it starts on 1 Farvardin.
+Monthly horizons use Gregorian calendar months with month-end clipping (``1M`` ending
+22 Oct 2026 is anchored on the 22 Sep 2026 close and starts on 23 Sep). YTD and yearly
+history use standard calendar years.
 
 When the investor started after the requested anchor, the window starts at entry
 (``SINCE_ENTRY``). Entry is the last known-zero close before the first funded day when
@@ -33,7 +32,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .dates import GREGORIAN, jalali_year, jalali_year_end, months_back, parse_date, to_jalali
+from .dates import GREGORIAN, calendar_year, calendar_year_end, format_date, months_back, parse_date
 
 
 @dataclass(frozen=True)
@@ -73,7 +72,7 @@ class Window:
     def describe(self) -> str:
         if self.anchor is None:
             return self.basis
-        return f"{to_jalali(self.first_day)} to {to_jalali(self.end)}"
+        return f"{format_date(self.first_day)} to {format_date(self.end)}"
 
 
 def entry_anchor(daily: pd.DataFrame) -> pd.Timestamp | None:
@@ -104,14 +103,14 @@ def resolve_windows(daily: pd.DataFrame, as_of, horizons=STANDARD, calendar: str
         if h.kind == "months":
             req = months_back(end, h.months, calendar)
         elif h.kind == "ytd":
-            req = jalali_year_end(jalali_year(end) - 1)
+            req = calendar_year_end(calendar_year(end) - 1)
         elif h.kind == "since_start":
             req = entry
         elif h.kind == "year":
-            req = jalali_year_end(h.year - 1)
+            req = calendar_year_end(h.year - 1)
         else:
             raise ValueError(f"unknown horizon kind {h.kind!r}")
-        w_end = min(end, jalali_year_end(h.year)) if h.kind == "year" else end
+        w_end = min(end, calendar_year_end(h.year)) if h.kind == "year" else end
         if w_end not in daily.index:
             out.append(Window(h.label, req, None, w_end, "INSUFFICIENT_HISTORY", "no value on the end date"))
             continue
@@ -139,11 +138,11 @@ def resolve_windows(daily: pd.DataFrame, as_of, horizons=STANDARD, calendar: str
     return [by_label[h.label] for h in horizons]
 
 
-def jalali_year_horizons(daily: pd.DataFrame, as_of) -> tuple[Horizon, ...]:
-    """One horizon per Jalali year from the entry year to the as-of year."""
+def calendar_year_horizons(daily: pd.DataFrame, as_of) -> tuple[Horizon, ...]:
+    """One horizon per calendar year from the entry year to the as-of year."""
     entry = entry_anchor(daily)
     end = parse_date(as_of)
     if entry is None:
         return ()
-    first_year = jalali_year(entry + pd.Timedelta(1, "D"))
-    return tuple(Horizon(str(y), "year", year=y) for y in range(first_year, jalali_year(end) + 1))
+    first_year = calendar_year(entry + pd.Timedelta(1, "D"))
+    return tuple(Horizon(str(y), "year", year=y) for y in range(first_year, calendar_year(end) + 1))

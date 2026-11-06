@@ -18,7 +18,7 @@ Feature: Transaction mapping
       | OPTION_PHYSICAL_SETTLEMENT |
 
   Scenario Outline: Boundary crossings are flows
-    Given a <type> transaction of 500 rials
+    Given a <type> transaction of 500 currency units
     Then its external flow is <flow>
 
     Examples:

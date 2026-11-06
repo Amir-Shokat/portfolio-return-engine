@@ -60,7 +60,7 @@ account). This table is the single source of that separation. It is generated fr
 **Dividend credited to the account (internal) versus dividend paid to the bank (external).**
 On the ex-dividend date the share price drops by the dividend. If the cash lands in the
 account's cash, value moves from holdings to cash: internal, no flow, and the return is
-unchanged. In the Iranian market issuers often pay the cash dividend directly to the
+unchanged. In the market market issuers often pay the cash dividend directly to the
 investor's bank account through the central depository. Then the price drop is inside the
 account but the cash is outside: it must be recorded as an outflow (a distribution), or the
 ex-date looks like a loss.

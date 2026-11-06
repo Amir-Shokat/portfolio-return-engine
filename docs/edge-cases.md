@@ -31,7 +31,7 @@ marked, a test (`tests/`). Most surprising returns came from inputs, not from fo
 
 | # | Case | Wrong result it caused | Rule | Test |
 |---|---|---|---|---|
-| C1 | A few thousand rials left after a full withdrawal | +300% days that compound into absurd yearly returns | `LOW_CAPITAL` days below 1,000,000 rials are flat and counted | `test_low_capital_day_is_flat_and_does_not_block` |
+| C1 | A few thousand currency units left after a full withdrawal | +300% days that compound into absurd yearly returns | `LOW_CAPITAL` days below 1,000,000 currency units are flat and counted | `test_low_capital_day_is_flat_and_does_not_block` |
 | C2 | Empty account for months | Division by zero | `NO_CAPITAL`; a window of only such days is `NO_INVESTMENT` | `test_all_low_capital_window_is_no_investment` |
 | C3 | Tiny start value, then a deposit late in the year (MWR) | About +215% "1Y" MWR for a +10% month | `|BV| < min_capital` treated as 0; period starts at the first real flow | `test_tiny_start_value_is_zeroed` |
 | C4 | Credit used to buy, no price change | +33% (credit counted twice) | Credit as capital, raw negative cash | `test_buying_on_credit_creates_no_return_by_itself` |
@@ -42,7 +42,7 @@ marked, a test (`tests/`). Most surprising returns came from inputs, not from fo
 |---|---|---|---|
 | T1 | New transaction type appears in the feed | Unmapped: blocks windows containing it, never guessed | `test_unknown_type_is_unmapped_never_guessed`, `test_unknown_type_blocks_only_windows_that_contain_it` |
 | T2 | Same transaction delivered twice | Identical repeat ignored; conflicting repeat invalid | `test_duplicates_and_bad_amounts` |
-| T3 | Classification by the Persian title of the row | Titles vary; identifiers only | `test_description_is_never_used_for_classification` |
+| T3 | Classification by the human-readable title of the row | Titles vary; identifiers only | `test_description_is_never_used_for_classification` |
 | T4 | Cash dividend paid to the bank account | External outflow, otherwise the ex-date looks like a loss | `test_external_boundary_crossings` |
 | T5 | Shares moved in from another broker | External inflow at market value, otherwise they look like profit | same |
 | T6 | Rights paid from outside vs from the account's cash | Two identifiers: inflow vs internal | `test_external_boundary_crossings`, `test_internal_types_carry_no_external_flow` |
@@ -54,13 +54,13 @@ marked, a test (`tests/`). Most surprising returns came from inputs, not from fo
 | # | Case | Rule | Test |
 |---|---|---|---|
 | H1 | One month before 31 March | 28 February (month-end clipping), never "30 days" | `test_calendar_months_clip_to_month_end` |
-| H2 | YTD in an Iranian app | Jalali year: starts on 1 Farvardin | `test_full_period_and_ytd_anchors` |
+| H2 | YTD in an market app | calendar year: starts on 1 Farvardin | `test_full_period_and_ytd_anchors` |
 | H3 | Investor joined two months ago | 3M, 6M, 1Y fall back to since entry (or "Insufficient history" under `nearest_only`) | `test_short_history_falls_back_to_since_entry` |
 | H4 | Exact anniversary | Stays in the lower bucket | `resolve_windows` |
 | H5 | As-of date has no value | `INSUFFICIENT_HISTORY` for every horizon, not the last available date silently | `test_end_date_without_value_is_insufficient_history` |
 | H6 | Anchor equals end | `NO_ELAPSED_TIME`, hidden | `resolve_windows`, `horizon_twr` |
 | H7 | Cumulative chart does not end at the horizon value | Rebased to 0% on the anchor; anchor's own return excluded | `test_cumulative_is_rebased_to_zero_on_anchor` |
-| H8 | Yearly returns do not link to the total | Checked on every run: `years_link_to_all` | `test_jalali_years_link_to_all` |
+| H8 | Yearly returns do not link to the total | Checked on every run: `years_link_to_all` | `test_calendar_years_link_to_all` |
 
 ## Solver (MWR)
 

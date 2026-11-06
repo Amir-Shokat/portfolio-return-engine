@@ -15,7 +15,7 @@ output.
 | `test_xirr.py` | 10% in one year, agreement with spreadsheet Newton on ordinary flows, the two-day +10% case where Newton fails, two roots (10% and 20%), every failure status |
 | `test_mwr.py` | MWR = TWR without flows, periodic versus annual, the tiny-start rule (+10.0% versus +214.8%), anchor and end flows, timing effect, total loss, no investment, unknown days |
 | `test_wealth_change_credit.py` | the identity and flow boundaries, unknown flows blocking, waterfall with credit on its own bar, credit as capital (0% on a credit purchase), the +33% side effect of flooring cash, removal versus repayment, credit inconsistencies |
-| `test_dates_horizons.py` | Jalali conversion (1 Farvardin 1405 = 21 March 2026), month-end clipping in both calendars, YTD on 1 Farvardin, since-entry fallback under both policies, no-investment and missing end date |
+| `test_dates_horizons.py` | ISO conversion (1 Farvardin 1405 = 21 March 2026), month-end clipping in both calendars, YTD on 1 Farvardin, since-entry fallback under both policies, no-investment and missing end date |
 | `test_display_policy.py` | status texts, one-month bands, horizon-specific bands, multiple-root warning, wealth-change rules, comparison texts, band calibration |
 | `test_engine.py` | end-to-end run on the synthetic account, identity on every horizon, yearly linking, chart rebasing, unknown type blocking only the windows that contain it, CLI, carry-forward of levels but not flows, missing and conflicting values, late-deposit detection |
 
@@ -23,7 +23,7 @@ output.
 
 * **Wealth-change identity**: `BV + wealth_change + net_flow = EV` for each horizon; the
   display policy hides a result that breaks it (`IDENTITY_BROKEN`).
-* **Yearly linking**: the linked TWR of the Jalali years equals the since-entry TWR
+* **Yearly linking**: the linked TWR of the calendar years equals the since-entry TWR
   (`years_link_to_all` in the controls).
 * **Subperiod reconciliation**: linking flow-free blocks gives the same TWR as linking days.
 * **No flows, same return**: with no external flows in a window, MWR equals TWR.
@@ -45,5 +45,5 @@ pytest
 python scripts/make_example_data.py      # regenerates examples/ (seed 42)
 python scripts/make_charts.py            # regenerates docs/*.png
 portfolio-returns --transactions examples/transactions.csv --values examples/daily_values.csv \
-    --as-of 1405/07/29 --years --audit audit.csv --daily daily.csv
+    --as-of 2026-10-21 --years --audit audit.csv --daily daily.csv
 ```

@@ -5,7 +5,7 @@ import pytest
 from portfolio_returns.twr import (annualise, cumulative, daily_return, daily_returns, eod_net_return,
                                    horizon_twr, subperiods)
 
-M = 1_000_000  # rials
+M = 1_000_000  # currency units
 
 
 def test_inflow_at_start_of_day():
@@ -56,7 +56,7 @@ def test_daily_table_must_be_consecutive(daily_factory):
 
 
 def test_low_capital_day_is_flat_and_does_not_block(daily_factory):
-    # 200,000 rials left after a withdrawal; a +50% day on that dust is skipped, not compounded.
+    # A small residual balance after a withdrawal; a +50% day on that dust is skipped, not compounded.
     rt = daily_returns(daily_factory([100 * M, 200_000, 300_000, 110 * M], inflow=[0, 0, 0, 99.7 * M],
                                      outflow=[0, 99.8 * M, 0, 0]))
     res = horizon_twr(rt, "2026-01-01", "2026-01-04")

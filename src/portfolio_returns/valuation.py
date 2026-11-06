@@ -5,7 +5,7 @@
 Levels and events are treated differently:
 
 * **Levels** (cash, holdings, options) are states. A day without a new observation keeps
-  the last one (forward fill), e.g. over the Thursday-Friday weekend or Nowruz.
+  the last one (forward fill), e.g. over the Saturday-Sunday weekend or Nowruz.
 * **Events** (flows) are things that happened. A day without events has zero flow.
   Flows are never forward filled; that would invent money that never moved.
 

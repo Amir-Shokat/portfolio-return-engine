@@ -1,24 +1,21 @@
 import pandas as pd
 import pytest
 
-from portfolio_returns.dates import JALALI, jalali_year_end, months_back, parse_date, to_jalali
+from portfolio_returns.dates import calendar_year_end, format_date, months_back, parse_date
 from portfolio_returns.horizons import STANDARD, resolve_windows
 
 M = 1_000_000
 
 
-def test_jalali_conversion_is_exact():
-    assert parse_date("1405/01/01") == pd.Timestamp("2026-03-21")
-    assert parse_date("1405-07-30") == pd.Timestamp("2026-10-22")
+def test_iso_date_parsing_and_formatting():
     assert parse_date("2026-10-22") == pd.Timestamp("2026-10-22")
-    assert to_jalali("2026-03-20") == "1404/12/29"
-    assert jalali_year_end(1404) == pd.Timestamp("2026-03-20")   # 1404 is not a leap year
+    assert format_date("2026-03-20") == "2026-03-20"
+    assert calendar_year_end(2026) == pd.Timestamp("2026-12-31")
 
 
 def test_calendar_months_clip_to_month_end():
     assert months_back("2026-03-31", 1) == pd.Timestamp("2026-02-28")
     assert months_back("2026-10-22", 12) == pd.Timestamp("2025-10-22")
-    assert months_back("1405/01/31", 1, JALALI) == parse_date("1404/12/29")
 
 
 def daily(start, values):
@@ -31,7 +28,7 @@ def test_full_period_and_ytd_anchors():
     end = d.index[-1]                                      # 2026-12-01
     w = {x.label: x for x in resolve_windows(d, end)}
     assert w["1M"].anchor == pd.Timestamp("2026-11-01") and w["1M"].first_day == pd.Timestamp("2026-11-02")
-    assert w["YTD"].anchor == pd.Timestamp("2026-03-20") and to_jalali(w["YTD"].first_day) == "1405/01/01"
+    assert w["YTD"].anchor == pd.Timestamp("2025-12-31") and format_date(w["YTD"].first_day) == "2026-01-01"
     assert all(w[k].basis == "FULL_PERIOD" for k in ["1M", "3M", "6M", "1Y", "YTD"])
     assert w["ALL"].basis == "SINCE_ENTRY"
 

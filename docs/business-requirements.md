@@ -30,13 +30,13 @@ when to invest.
 |---|---|---|
 | Investor | "How did my picks do?" | Return (TWR) and its cumulative chart |
 | Investor | "What did I actually earn on my money?" | Personal return (MWR) |
-| Investor | "How many rials did I make, apart from what I put in?" | Wealth change |
+| Investor | "How many currency units did I make, apart from what I put in?" | Wealth change |
 | Support | "Why does the app show this number?" | Audit and reason codes |
 | Data team | "Which accounts have unreliable inputs?" | Control counters and quality report |
 
 ## Functional requirements
 
-**R1. Horizons.** 1M, 3M, 6M, 1Y, YTD (Jalali year) and since entry. Calendar months with
+**R1. Horizons.** 1M, 3M, 6M, 1Y, YTD (calendar year) and since entry. Calendar months with
 month-end clipping. Requested and effective start dates are both available, and the effective
 dates are shown to the investor.
 
@@ -75,10 +75,10 @@ transactions, the daily table and the reason codes.
 ## Acceptance criteria
 
 * AC1. For an account with no flows, TWR and MWR are equal (to rounding) for every horizon.
-* AC2. For every displayed wealth change, start + gain + net flow = end, to the rial.
+* AC2. For every displayed wealth change, start + gain + net flow = end, to the smallest currency unit.
 * AC3. A deposit and a withdrawal of the same size on the same day change the TWR of that day
   compared with no flows, unless the market did not move.
-* AC4. The linked TWR of the Jalali years equals the since-entry TWR.
+* AC4. The linked TWR of the calendar years equals the since-entry TWR.
 * AC5. An unmapped transaction blocks exactly the horizons whose window contains its date.
 * AC6. Buying with credit on a day with no price change gives a 0% daily return.
 * AC7. No horizon shows 0% for a value that was not calculated.

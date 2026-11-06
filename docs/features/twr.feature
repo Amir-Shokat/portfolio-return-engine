@@ -3,8 +3,8 @@ Feature: Time-weighted return
   so that my own deposits and withdrawals do not look like gains or losses.
 
   Background:
-    Given end-of-day account values in rials
-    And the minimum capital is 1,000,000 rials
+    Given end-of-day account values in currency units
+    And the minimum capital is 1,000,000 currency units
 
   Scenario: Deposit at the start of the day joins the capital base
     Given the account closed at 100,000,000 yesterday
@@ -30,7 +30,7 @@ Feature: Time-weighted return
     Then the two-day TWR is -1%
 
   Scenario: Dust left after a withdrawal is not measured
-    Given the account holds 200,000 rials at the start of a day
+    Given the account holds 200,000 currency units at the start of a day
     When the value rises 50% that day
     Then the day is LOW_CAPITAL with a flat factor of 1
     And the horizon is still calculated and counts one low-capital day
@@ -47,6 +47,6 @@ Feature: Time-weighted return
     And the last point equals the 1M TWR
 
   Scenario: Yearly returns link to the total
-    Given an account with history in two Jalali years
-    When the TWR of each Jalali year is linked
+    Given an account with history in two calendar years
+    When the TWR of each calendar year is linked
     Then the result equals the since-entry TWR

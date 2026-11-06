@@ -1,5 +1,5 @@
 Feature: Wealth change
-  As an investor I want to see how many rials my investments made,
+  As an investor I want to see how many currency units my investments made,
   apart from what I deposited or withdrew.
 
   Scenario: The four card numbers add up

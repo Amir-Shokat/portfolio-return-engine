@@ -5,12 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "portfolio-returns"
 version = "1.0.0"
-description = "Time-weighted return, money-weighted return (XIRR) and wealth change for a brokerage account: transaction mapping, daily valuation, horizons on the Jalali calendar, display policy and edge cases."
+description = "Time-weighted return, money-weighted return (XIRR) and wealth change for a brokerage account: transaction mapping, daily valuation, ISO-date horizons, display policy and edge cases."
 readme = "README.md"
 license = {text = "MIT"}
 authors = [{name = "Amirmahdi Shokatabadi"}]
 requires-python = ">=3.10"
-dependencies = ["numpy>=1.23", "pandas>=1.5", "jdatetime>=4.1"]
+dependencies = ["numpy>=1.23", "pandas>=1.5"]
 
 [project.optional-dependencies]
 charts = ["matplotlib>=3.5"]

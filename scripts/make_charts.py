@@ -26,7 +26,7 @@ plt.rcParams.update({"font.size": 10, "axes.edgecolor": GRID, "axes.labelcolor":
                      "axes.titlesize": 11, "axes.titleweight": "bold"})
 
 rep = analyse(pd.read_csv(ROOT / "examples/transactions.csv"), pd.read_csv(ROOT / "examples/daily_values.csv"),
-              "1405/07/29")
+              "2026-10-21")
 
 # 1. Cumulative TWR since entry, rebased to 0%, with external flow days marked.
 cum = rep.charts["ALL"] * 100
@@ -89,7 +89,7 @@ for i, (step, amt, lev) in enumerate(zip(wf["step"], wf_amt, level)):
 ax.set_xticks(range(len(wf)), [s.replace(", net", "\n(net)").replace("Investment gain", "Investment\ngain")
                                 for s in wf["step"]], fontsize=8)
 ax.set_ylim(0, float(level.max()) * 1.1)
-ax.set_title("Wealth change over 1Y, million rials: start + gain + flows = end", loc="left")
+ax.set_title("Wealth change over 1Y, millions: start + gain + flows = end", loc="left")
 ax.grid(axis="y", color=GRID, lw=0.6)
 ax.set_axisbelow(True)
 fig.tight_layout()

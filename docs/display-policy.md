@@ -48,7 +48,7 @@ and "not applicable" are different things and need different texts.
    An MWR solved with several valid roots is never plainly normal: it is at least a warning.
 
 Wealth change is an amount, so its bands are applied to the hidden ratio
-`R = (EV + outflows) / (BV + inflows) - 1`, not to the rial figure.
+`R = (EV + outflows) / (BV + inflows) - 1`, not to the smallest currency unit.
 
 ## Default bands
 
@@ -63,7 +63,7 @@ Calibrate and approve limits separately before adopting this demonstration.
 | 1Y | -70% | -45% | +300% | +600% |
 | longer | -75% | -50% | +400% | +800% |
 
-Wider limits for longer horizons are deliberate: +150% in a year is plausible on the Tehran
+Wider limits for longer horizons are deliberate: +150% in a year is plausible in a volatile
 market, +150% in a month much less so.
 
 MWR reuses the TWR bands for now. This is a temporary decision until MWR has its own
@@ -100,7 +100,7 @@ when to deposit.
 
 ## Acceptance criteria
 
-* No horizon shows 0% (or 0 rials) for a value that was not calculated.
+* No horizon shows 0% (or 0 currency units) for a value that was not calculated.
 * Every hidden or flagged value has a reason code in the output.
 * Changing a band changes only the display state, never the stored value.
 * A hidden horizon does not change the state of any other horizon.

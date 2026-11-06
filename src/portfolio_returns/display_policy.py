@@ -65,7 +65,7 @@ TWR_BANDS = {
     "default": Bands(-0.75, -0.50, 4.00, 8.00),
 }
 MWR_BANDS = TWR_BANDS  # temporary: reuse the TWR bands until MWR has its own calibration
-WC_BANDS = {           # applied to the hidden ratio R, not to the rial amount
+WC_BANDS = {           # applied to the hidden ratio R, not to the currency amount
     "1M": Bands(-0.55, -0.35, 1.00, 2.00),
     "3M": Bands(-0.55, -0.35, 1.50, 3.00),
     "6M": Bands(-0.55, -0.35, 3.00, 5.00),

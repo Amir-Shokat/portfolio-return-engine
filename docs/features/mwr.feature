@@ -6,7 +6,7 @@ Feature: Money-weighted return (personal return)
     Then MWR equals TWR for that window
 
   Scenario: Periodic, not annual, return is shown
-    Given 100,000,000 rials grows to 110,000,000 over 365 days with no flows
+    Given 100,000,000 currency units grows to 110,000,000 over 365 days with no flows
     Then the shown MWR is 10%
     And the annual rate kept in the back end is 10%
 
@@ -18,9 +18,9 @@ Feature: Money-weighted return (personal return)
     And the comparison text explains that timing made the personal return negative
 
   Scenario: Tiny start value is ignored
-    Given 500 rials sat in the account for eleven months
+    Given 500 currency units sat in the account for eleven months
     And the investor then deposits 100,000,000 and earns 10% in a month
-    When the 1Y MWR is calculated with a minimum capital of 1,000,000 rials
+    When the 1Y MWR is calculated with a minimum capital of 1,000,000 currency units
     Then the start value is treated as zero
     And the MWR is about +10%, not about +215%
 

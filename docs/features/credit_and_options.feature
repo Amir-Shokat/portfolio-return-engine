@@ -1,8 +1,8 @@
 Feature: Purchase credit and options in the account value
 
   Scenario: Buying on credit is not a gain
-    Given 100,000,000 rials in cash
-    And 50,000,000 rials of credit is granted
+    Given 100,000,000 currency units in cash
+    And 50,000,000 currency units of credit is granted
     And shares worth 150,000,000 are bought with no price change
     Then the account value is 150,000,000
     And the daily return is 0%

@@ -1,4 +1,4 @@
-"""Wealth change: the gain or loss in rials after removing deposits and withdrawals.
+"""Wealth change: the gain or loss in currency units after removing deposits and withdrawals.
 
     net_flow       = sum(inflows) - sum(outflows)          over (anchor, end]
     wealth_change  = EV - BV - net_flow

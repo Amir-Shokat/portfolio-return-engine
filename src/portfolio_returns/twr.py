@@ -35,7 +35,7 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
-MIN_CAPITAL_DEFAULT = 1_000_000  # rials; calibrate on real data (docs/display-policy.md)
+MIN_CAPITAL_DEFAULT = 1_000_000  # currency units; calibrate on real data (docs/display-policy.md)
 
 FLAT_STATUSES = {"BASELINE", "NO_CAPITAL", "LOW_CAPITAL"}
 

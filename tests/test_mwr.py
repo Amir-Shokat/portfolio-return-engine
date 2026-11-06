@@ -22,7 +22,7 @@ def test_periodic_and_annual():
 
 
 def test_tiny_start_value_is_zeroed(daily_factory):
-    # 500 rials sit in the account for 330 days, then a deposit and a 10% month.
+    # A small residual balance sits in the account for 330 days, then a deposit and a 10% month.
     values = [500.0] * 331 + [100 * M] * 30 + [110 * M]
     inflow = [0.0] * 331 + [100 * M - 500] + [0.0] * 30
     inflow = inflow[:len(values)]

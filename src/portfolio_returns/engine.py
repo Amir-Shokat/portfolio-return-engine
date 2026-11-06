@@ -8,8 +8,8 @@ import numpy as np
 import pandas as pd
 
 from . import display_policy as dp
-from .dates import GREGORIAN, parse_date, to_jalali
-from .horizons import STANDARD, Window, jalali_year_horizons, resolve_windows
+from .dates import GREGORIAN, format_date, parse_date
+from .horizons import STANDARD, Window, calendar_year_horizons, resolve_windows
 from .mwr import horizon_mwr
 from .quality import control_report, unexplained_changes
 from .transactions import classify
@@ -92,7 +92,7 @@ def analyse(transactions: pd.DataFrame, values: pd.DataFrame, as_of, *, horizons
             charts[w.label] = chart
     table = pd.DataFrame(rows)
     year_rows = []
-    for w in resolve_windows(daily, as_of, jalali_year_horizons(daily, as_of), calendar, history_policy):
+    for w in resolve_windows(daily, as_of, calendar_year_horizons(daily, as_of), calendar, history_policy):
         row, _ = evaluate_window(daily, returns, w, min_capital)
         row["year_to_date"] = bool(w.end is not None and w.end == as_of)
         year_rows.append(row)
@@ -126,8 +126,8 @@ def format_table(report: Report) -> str:
     head = f"{'Horizon':<7} {'From':<10} {'To':<10} {'Basis':<12} {'TWR':>10} {'MWR':>10} {'Wealth change':>16}  Notes"
     lines = [head, "-" * len(head)]
     for _, r in report.horizons.iterrows():
-        frm = to_jalali(r["first_day"]) if r["first_day"] is not None and not pd.isna(r["first_day"]) else ""
-        to = to_jalali(r["end"]) if r["end"] is not None and not pd.isna(r["end"]) else ""
+        frm = format_date(r["first_day"]) if r["first_day"] is not None and not pd.isna(r["first_day"]) else ""
+        to = format_date(r["end"]) if r["end"] is not None and not pd.isna(r["end"]) else ""
         notes = []
         if r["twr_display"] in (dp.HIDDEN, dp.EMPTY) and r["twr_status"] != "CALCULATED":
             notes.append(r["twr_status"].lower().replace("_", " "))

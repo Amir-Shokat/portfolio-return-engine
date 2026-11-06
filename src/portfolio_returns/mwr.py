@@ -21,7 +21,7 @@ was emptied inside the window, so a one-month rate is not stretched over a whole
 Boundary rules (from the edge-case review):
 
 1. ``|BV| < min_capital``: BV is treated as 0 and the period starts at the first real flow.
-   (A few rials left in the account for eleven months, then a deposit and a 10% month,
+   (A small residual balance left for eleven months, then a deposit and a 10% month,
    would otherwise show about +215% for the year instead of +10%.)
 2. ``BV <= -min_capital`` (real debt at the start): kept as it is.
 3. No positive flow (nothing came back): -100%; reason LOSS_EXCEEDS_CAPITAL if EV < 0.
